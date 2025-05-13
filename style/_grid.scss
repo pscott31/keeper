@@ -1,0 +1,28 @@
+.grid-table {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr; /* Custom column widths */
+    border: 1px solid #ccc;
+}
+
+.grid-header,
+.grid-cell {
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+.grid-header {
+    font-weight: bold;
+    background-color: #f7f7f7;
+}
+
+/* Remove last column border */
+.grid-header:nth-child(4n),
+.grid-cell:nth-child(4n) {
+    border-right: none;
+}
+
+/* Optional: make rows stand out */
+.grid-row:nth-child(even) .grid-cell {
+    background-color: #fafafa;
+}

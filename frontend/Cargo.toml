@@ -1,0 +1,13 @@
+[package]
+name = "frontend"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+common = { path = "../common", features = ["hydrate"] }
+wasm-bindgen = { workspace = true }
+console_error_panic_hook = { workspace = true }
+leptos = { workspace = true, features = ["hydrate"] }

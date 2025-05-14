@@ -15,3 +15,5 @@ Cargo.lock
 
 # Test database for type checking DB queries with SQLite
 test.db*
+
+.VSCodeCounter

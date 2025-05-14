@@ -1,0 +1,68 @@
+{
+  "db_name": "SQLite",
+  "query": "Select expenses.id as id,\n                description,\n                suppliers.name as supplier_name,\n                supplier_id,\n                amount,\n                date as 'date: chrono::NaiveDate',\n                submitter_id,\n                users.name as submitter_name,\n                status as 'status: ExpenseStatus'\n        from expenses\n        join suppliers on suppliers.id = expenses.supplier_id\n        join users on users.id = expenses.submitter_id\n        \n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "description",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "supplier_name",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "supplier_id",
+        "ordinal": 3,
+        "type_info": "Integer"
+      },
+      {
+        "name": "amount",
+        "ordinal": 4,
+        "type_info": "Float"
+      },
+      {
+        "name": "date: chrono::NaiveDate",
+        "ordinal": 5,
+        "type_info": "Text"
+      },
+      {
+        "name": "submitter_id",
+        "ordinal": 6,
+        "type_info": "Integer"
+      },
+      {
+        "name": "submitter_name",
+        "ordinal": 7,
+        "type_info": "Text"
+      },
+      {
+        "name": "status: ExpenseStatus",
+        "ordinal": 8,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "50919b8bb84d54a4e5b523bf75f73ca5f3dc2816d416d79be0dcdf8fae484c70"
+}

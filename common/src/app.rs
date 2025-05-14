@@ -47,45 +47,56 @@ pub fn App() -> impl IntoView {
     }
 }
 
+#[cfg_attr(feature = "ssr", derive(sqlx::FromRow))]
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
-struct ExpenseView {
-    id: u64,
+pub struct ExpenseView {
+    id: i64,
     description: String,
     supplier_name: String,
-    supplier_id: u64,
+    supplier_id: i64,
     amount: f64,
     date: chrono::NaiveDate,
-    submitter_id: u64,
+    submitter_id: i64,
     submitter_name: String,
     status: ExpenseStatus,
 }
 
+#[cfg_attr(feature = "ssr", derive(sqlx::Type))]
+#[cfg_attr(feature = "ssr", sqlx(type_name = "TEXT"))]
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
-enum ExpenseStatus {
+pub enum ExpenseStatus {
     Pending,
     Approved,
     Paid,
 }
 
-async fn load_data() -> Result<Vec<ExpenseView>, String> {
-    // Simulate a network request
-    // tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+#[server]
+pub async fn load_data() -> Result<Vec<ExpenseView>, ServerFnError> {
+    let db = crate::db_pool::use_db();
 
-    // Return some dummy data
-    Ok(vec![
-        ExpenseView {
-            id: 1,
-            description: "Lunch with client".to_string(),
-            supplier_name: "Alice".to_string(),
-            supplier_id: 1,
-            amount: 30.0,
-            date: chrono::NaiveDate::from_ymd_opt(2023, 10, 1).unwrap(),
-            submitter_id: 1,
-            submitter_name: "Bob".to_string(),
-            status: ExpenseStatus::Pending,
-        },
-        // Add more dummy data as needed
-    ])
+    match sqlx::query_as!(
+        ExpenseView,
+        "Select expenses.id as id,
+                description,
+                suppliers.name as supplier_name,
+                supplier_id,
+                amount,
+                date as 'date: chrono::NaiveDate',
+                submitter_id,
+                users.name as submitter_name,
+                status as 'status: ExpenseStatus'
+        from expenses
+        join suppliers on suppliers.id = expenses.supplier_id
+        join users on users.id = expenses.submitter_id
+        
+        "
+    )
+    .fetch_all(&db)
+    .await
+    {
+        Ok(expenses) => Ok(expenses),
+        Err(e) => Err(ServerFnError::ServerError(e.to_string())),
+    }
 }
 
 /// Renders the home page of your application.
